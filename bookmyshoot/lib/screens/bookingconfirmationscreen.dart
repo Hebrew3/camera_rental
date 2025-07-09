@@ -20,6 +20,25 @@ class Booking {
     required this.totalPrice,
     required this.status,
   });
+
+  // Add factory method to create from Map
+  factory Booking.fromMap(Map<String, dynamic> map) {
+    final rentalPeriodMap = map['rentalPeriod'] as Map<String, dynamic>;
+    return Booking(
+      id: map['id'] as String,
+      equipmentId: map['equipmentId'] as String,
+      userId: map['userId'] as String,
+      rentalPeriod: DateTimeRange(
+        start: DateTime.parse(rentalPeriodMap['start'] as String),
+        end: DateTime.parse(rentalPeriodMap['end'] as String),
+      ),
+      totalPrice: (map['totalPrice'] as num).toDouble(),
+      status: BookingStatus.values.firstWhere(
+        (e) => e.toString().split('.').last == map['status'],
+        orElse: () => BookingStatus.CONFIRMED,
+      ),
+    );
+  }
 }
 
 class CameraEquipment {
@@ -36,6 +55,20 @@ class CameraEquipment {
     required this.dailyPrice,
     required this.ownerId,
   });
+
+  // Add factory method to create from Map
+  factory CameraEquipment.fromMap(Map<String, dynamic> map) {
+    return CameraEquipment(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      type: EquipmentType.values.firstWhere(
+        (e) => e.toString().split('.').last == map['type'],
+        orElse: () => EquipmentType.MIRRORLESS,
+      ),
+      dailyPrice: (map['dailyPrice'] as num).toDouble(),
+      ownerId: map['ownerId'] as String,
+    );
+  }
 
   IconData get icon {
     switch (type) {
@@ -67,6 +100,14 @@ class BookingConfirmationScreen extends StatelessWidget {
     required this.booking,
     required this.equipment,
   });
+
+  // Add factory constructor to create from route arguments
+  factory BookingConfirmationScreen.fromArguments(Map<String, dynamic> arguments) {
+    return BookingConfirmationScreen(
+      booking: Booking.fromMap(arguments['booking'] as Map<String, dynamic>),
+      equipment: CameraEquipment.fromMap(arguments['equipment'] as Map<String, dynamic>),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

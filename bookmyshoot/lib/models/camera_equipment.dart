@@ -1,3 +1,6 @@
+// camera_equipment.dart
+enum EquipmentType { MIRRORLESS, DSLR, LENS, TRIPOD }
+
 class CameraEquipment {
   final String id;
   final String name;
@@ -15,14 +18,14 @@ class CameraEquipment {
 
   factory CameraEquipment.fromMap(Map<String, dynamic> map) {
     return CameraEquipment(
-      id: map['id'] ?? '',
-      name: map['name'] ?? '',
+      id: map['id'] as String? ?? '',
+      name: map['name'] as String? ?? '',
       type: EquipmentType.values.firstWhere(
         (e) => e.toString().split('.').last == map['type'],
         orElse: () => EquipmentType.MIRRORLESS,
       ),
-      dailyPrice: (map['dailyPrice'] ?? 0.0).toDouble(),
-      ownerId: map['ownerId'] ?? '',
+      dailyPrice: (map['dailyPrice'] as num?)?.toDouble() ?? 0.0,
+      ownerId: map['ownerId'] as String? ?? '',
     );
   }
 
@@ -36,5 +39,3 @@ class CameraEquipment {
     };
   }
 }
-
-enum EquipmentType { MIRRORLESS, DSLR, LENS, TRIPOD }
